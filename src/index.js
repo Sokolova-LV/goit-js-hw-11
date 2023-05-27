@@ -1,5 +1,5 @@
-import SimpleLightbox from "simplelightbox";
-import "simplelightbox/dist/simple-lightbox.min.css";
+//import SimpleLightbox from "simplelightbox";
+//import "simplelightbox/dist/simple-lightbox.min.css";
 import Notiflix from "notiflix";
 import NewsApiService, { fetchArticles } from "./news-service";
 import simpleLightbox from "simplelightbox";
