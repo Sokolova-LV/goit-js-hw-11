@@ -2,7 +2,6 @@ import SimpleLightbox from "simplelightbox";
 import "simplelightbox/dist/simple-lightbox.min.css";
 import Notiflix from "notiflix";
 import { fetchArticles } from "./news-service";
-import simpleLightbox from "simplelightbox";
 
 const searchForm = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
