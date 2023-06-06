@@ -5,40 +5,14 @@ import { fetchArticles } from "./news-service";
 
 const searchForm = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
+const loadMoreBtn = document.querySelector('.load-more');
 
-let page = 1;
 let query = '';
+let page = 1;
 const perPage = 40;
-
-// Настройка запроса //
+let simpleLightBox;
 
 searchForm.addEventListener('submit', onSearch);
-fetchArticles();
-
-function onSearch(e) {
-    e.preventDefault();
-
-    page = 1;
-    query = e.currentTarget.elements.searchQuery.value;
-    gallery.innerHTML = '';
-
-    fetchArticles(query, page, perPage)
-        .then(data => {
-            if (data.totalHits === 0) {
-                Notiflix.Notify.failure(
-                    'Sorry, there are no images matching your search query. Please try again.'
-                );
-            } else {
-                renderCards(data.hits);
-                simpleLightbox = new SimpleLightbox('.gallery a').refresh();
-                Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-            }
-        })
-        .catch(error => console.log(error))
-        .finally(() => {
-            searchForm.reset();
-        });
-}
 
 // Отрисовка страницы //
 
@@ -81,17 +55,67 @@ function renderCards(images) {
     .join('');
 
     gallery.insertAdjacentHTML('beforeend', articles);
+
+    // Прокручивание страницы //
+
+    const { height: cardHeight } = document
+        .querySelector('.gallery')
+        .firstElementChild.getBoundingClientRect();
+
+    window.scrollBy({
+        top: cardHeight * 2,
+        behavior: "smooth",
+    });
 }
 
-onLoadMore();
+// Настройка запроса //
+
+fetchArticles();
+
+function onSearch(e) {
+    e.preventDefault();
+
+    page = 1;
+    query = e.currentTarget.elements.searchQuery.value;
+    gallery.innerHTML = '';
+
+    if (query === '') {
+        Notiflix.Notify.failure(
+            'Sorry, there are no images matching your search query. Please try again.'
+        );
+        return;
+    }
+
+    fetchArticles(query, page, perPage)
+        .then(data => {
+            if (data.totalHits === 0) {
+                Notiflix.Notify.failure(
+                    'Sorry, there are no images matching your search query. Please try again.'
+                );
+            } else {
+                renderCards(data.hits);
+                simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+                Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
+            }
+        })
+        .catch(error => console.log(error))
+        .finally(() => {
+            searchForm.reset();
+        });
+}
+
+// Загрузка страницы //
+
+loadMoreBtn.addEventListener('click', onLoadMore);
+
 function onLoadMore() {
     page += 1;
-    simpleLightbox.refresh();
+    simpleLightBox.refresh();
 
     fetchArticles(query, page, perPage)
         .then(data => {
             renderCards(data.hits);
-            simpleLightbox = new SimpleLightbox('.gallery a').refresh();
+            simpleLightBox = new SimpleLightbox('.gallery a').refresh();
 
             const allPages = Math.ceil(data.totalHits / perPage);
 
