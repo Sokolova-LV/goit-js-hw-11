@@ -6,6 +6,7 @@ import { fetchArticles } from "./news-service";
 const searchForm = document.querySelector('.search-form');
 const gallery = document.querySelector('.gallery');
 const loadMoreBtn = document.querySelector('.load-more');
+let isLoadMoreBtn = false;
 
 let query = '';
 let page = 1;
@@ -106,22 +107,27 @@ function onSearch(e) {
 
 // Загрузка страницы //
 
-loadMoreBtn.addEventListener('click', onLoadMore);
-
-function onLoadMore() {
-    page += 1;
-    simpleLightBox.refresh();
-
-    fetchArticles(query, page, perPage)
+loadMoreBtn.addEventListener('click', () => {
+        if (page > 1) {
+            return toggleLoadMoreBtn();
+        }
+        
+        fetchArticles(query, page, perPage)
         .then(data => {
             renderCards(data.hits);
             simpleLightBox = new SimpleLightbox('.gallery a').refresh();
+            page += 1;
+            simpleLightBox.refresh();
+        
+        const allPages = Math.ceil(data.totalHits / perPage);
 
-            const allPages = Math.ceil(data.totalHits / perPage);
-
-            if(page > allPages) {
-                Notiflix.Notify.failure(`We're sorry, but you've reached the end of search results.`);
-            }
-        })
+        if (page > allPages) {
+            Notiflix.Notify.failure(`We're sorry, but you've reached the end of search results.`);
+        }})
         .catch(error => console.log(error));
+});
+
+function toggleLoadMoreBtn() {
+    isLoadMoreBtn = true;
+    loadMoreBtn.classList.add('is-visible');
 }
