@@ -102,15 +102,14 @@ function onSearch(e) {
         .finally(() => {
             searchForm.reset();
         });
+
+    return nextPage();
 }
 
 // Загрузка страницы //
 
 loadMoreBtn.addEventListener('click', () => {
-        if (page === 1) {
-            return nextPage();
-        }
-        
+
         fetchArticles(query, page, perPage)
         .then(data => {
             renderCards(data.hits);
@@ -125,12 +124,10 @@ loadMoreBtn.addEventListener('click', () => {
         }})
         .catch(error => console.log(error));
 });
-
+    
 function nextPage() {
     loadMoreBtn.classList.add("is-visible");
 }
-
-
 
 
 /*loadMoreBtn.addEventListener('click', onloadMore);
