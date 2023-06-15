@@ -114,7 +114,7 @@ loadMoreBtn.addEventListener('click', () => {
         .then(data => {
             renderCards(data.hits);
             simpleLightBox = new SimpleLightbox('.gallery a').refresh();
-            page += 1;
+            //page += 1;
             simpleLightBox.refresh();
         
         const allPages = Math.ceil(data.totalHits / perPage);
@@ -127,6 +127,7 @@ loadMoreBtn.addEventListener('click', () => {
     
 function nextPage() {
     loadMoreBtn.classList.add("is-visible");
+    page += 1;
 }
 
 
