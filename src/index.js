@@ -70,8 +70,6 @@ function renderCards(images) {
 
 // Настройка запроса //
 
-fetchArticles();
-
 function onSearch(e) {
     e.preventDefault();
 
