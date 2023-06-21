@@ -106,31 +106,9 @@ function onSearch(e) {
 
 // Загрузка страницы //
 
-loadMoreBtn.addEventListener('click', () => {
+loadMoreBtn.addEventListener('click', onloadMore);
 
-        fetchArticles(query, page, perPage)
-        .then(data => {
-            renderCards(data.hits);
-            simpleLightBox = new SimpleLightbox('.gallery a').refresh();
-            page += 1;
-            simpleLightBox.refresh();
-        
-        const allPages = Math.ceil(data.totalHits / perPage);
-
-        if (page > allPages) {
-            Notiflix.Notify.failure(`We're sorry, but you've reached the end of search results.`);
-        }})
-        .catch(error => console.log(error));
-});
-    
-function nextPage() {
-    loadMoreBtn.classList.add("is-visible");
-    page += 1;
-}
-
-
-/*loadMoreBtn.addEventListener('click', onloadMore);
-function onloadMore(
+function onloadMore() {
     fetchArticles(query, page, perPage)
         .then(data => {
             renderCards(data.hits);
@@ -144,4 +122,9 @@ function onloadMore(
             Notiflix.Notify.failure(`We're sorry, but you've reached the end of search results.`);
         }})
         .catch(error => console.log(error));
-);*/
+}
+    
+function nextPage() {
+    loadMoreBtn.classList.add("is-visible");
+    page += 1;
+}
