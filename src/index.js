@@ -9,7 +9,7 @@ const loadMoreBtn = document.querySelector('.load-more');
 
 let query = '';
 let page = 1;
-const perPage = 40;
+let perPage = 40;
 let simpleLightBox;
 
 searchForm.addEventListener('submit', onSearch);
@@ -17,6 +17,7 @@ searchForm.addEventListener('submit', onSearch);
 // Отрисовка страницы //
 
 function renderCards(images) {
+    
     const articles = images
     .map(image => {
         const {
@@ -72,6 +73,7 @@ function renderCards(images) {
 
 function onSearch(e) {
     e.preventDefault();
+    loadMoreBtn.classList.remove("is-visible");
 
     page = 1;
     query = e.currentTarget.elements.searchQuery.value;
@@ -89,19 +91,19 @@ function onSearch(e) {
             if (data.totalHits === 0) {
                 Notiflix.Notify.failure(
                     'Sorry, there are no images matching your search query. Please try again.'
-                );
+                ); 
             } else {
                 renderCards(data.hits);
                 simpleLightBox = new SimpleLightbox('.gallery a').refresh();
                 Notiflix.Notify.success(`Hooray! We found ${data.totalHits} images.`);
-            }
+                loadMoreBtn.classList.add("is-visible");
+                page += 1;
+            } 
         })
-        .catch(error => console.log(error))
+        .catch(error => console.log(error)) 
         .finally(() => {
             searchForm.reset();
         });
-
-    return nextPage();
 }
 
 // Загрузка страницы //
@@ -116,15 +118,11 @@ function onloadMore() {
             page += 1;
             simpleLightBox.refresh();
         
-        const allPages = Math.ceil(data.totalHits / perPage);
+        let allPages = Math.ceil(data.totalHits / perPage);
 
         if (page > allPages) {
             Notiflix.Notify.failure(`We're sorry, but you've reached the end of search results.`);
+            loadMoreBtn.classList.remove("is-visible"); 
         }})
         .catch(error => console.log(error));
-}
-    
-function nextPage() {
-    loadMoreBtn.classList.add("is-visible");
-    page += 1;
 }
